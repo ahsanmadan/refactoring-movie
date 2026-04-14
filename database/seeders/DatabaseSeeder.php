@@ -5,11 +5,8 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\Movie;
-use App\Models\Category;
-use Illuminate\Database\Seeder;
-use Database\Seeders\MovieSeeder;
 use Database\Factories\MovieFactory;
-use Database\Seeders\CategorySeeder;
+use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -25,11 +22,11 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        //seeder
+        // seeder
         $this->call(CategorySeeder::class);
-        $this->call(MovieSeeder::class);
+        // $this->call(MovieSeeder::class);
 
-        //factory
+        // factory
         Movie::factory(100)->create();
         // MovieFactory::new()->count(10)->create();
     }
