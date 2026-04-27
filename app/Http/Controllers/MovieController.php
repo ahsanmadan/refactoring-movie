@@ -41,15 +41,12 @@ class MovieController extends Controller
 
     public function store(StoreMovieRequest $request)
     {
-        // Ambil data yang sudah tervalidasi
         $validated = $request->validated();
 
-        // Simpan file foto jika ada
         if ($request->hasFile('foto_sampul')) {
             $validated['foto_sampul'] = $request->file('foto_sampul')->store('movie_covers', 'public');
         }
 
-        // Simpan data ke database
         Movie::create($validated);
 
         return redirect('/')->with('success', 'Film berhasil ditambahkan.');
@@ -82,31 +79,25 @@ class MovieController extends Controller
             'foto_sampul' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        // Jika validasi gagal, kembali ke halaman edit dengan pesan kesalahan
         if ($validator->fails()) {
             return redirect("/movies/edit/{$id}")
                 ->withErrors($validator)
                 ->withInput();
         }
 
-        // Ambil data movie yang akan diupdate
         $movie = Movie::findOrFail($id);
 
-        // Jika ada file yang diunggah, simpan file baru
         if ($request->hasFile('foto_sampul')) {
             $randomName = Str::uuid()->toString();
             $fileExtension = $request->file('foto_sampul')->getClientOriginalExtension();
             $fileName = $randomName.'.'.$fileExtension;
 
-            // Simpan file foto ke folder public/images
             $request->file('foto_sampul')->move(public_path('images'), $fileName);
 
-            // Hapus foto lama jika ada
             if (File::exists(public_path('images/'.$movie->foto_sampul))) {
                 File::delete(public_path('images/'.$movie->foto_sampul));
             }
 
-            // Update record di database dengan foto yang baru
             $movie->update([
                 'judul' => $request->judul,
                 'sinopsis' => $request->sinopsis,
@@ -116,7 +107,7 @@ class MovieController extends Controller
                 'foto_sampul' => $fileName,
             ]);
         } else {
-            // Jika tidak ada file yang diunggah, update data tanpa mengubah foto
+
             $movie->update([
                 'judul' => $request->judul,
                 'sinopsis' => $request->sinopsis,
